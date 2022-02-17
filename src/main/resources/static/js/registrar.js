@@ -1,6 +1,5 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
-  registrar();
 });
 async function registrar(){
     let datos = {};
@@ -27,6 +26,8 @@ async function registrar(){
           // agarra cualquier objeto y lo convierte en stirng json
         body: JSON.stringify(datos)
       });
+    alert("la Cuenta " + datos.email + ", fue creada con exito")
+    window.location.href = "login.html";
 
 }
 

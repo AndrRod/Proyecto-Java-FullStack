@@ -1,6 +1,6 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
-  iniciarSesion();
+
 });
 async function iniciarSesion(){
     let datos = {};
@@ -21,10 +21,17 @@ async function iniciarSesion(){
         body: JSON.stringify(datos)
       });
 
-     const response = await request.text();
-     if (response==="ok"){
-         window.location.href = "usuario.html"
+     const response =  await request.text();
+     // aca se debería devolver un tipo de error (401) y no un fail
+     if (response !="fail"){
+         //guardamos el token del lado del browser junto el email
+         localStorage.email = datos.email;
+         localStorage.token = response;
+         window.location.href = "usuarios.html"
      }
-     alert("Usuario o Contraseña incorrecta, intente de nuevo")
+     else {
+         alert("Usuario o Contraseña incorrecta, intente de nuevo")
+     }
+
 }
 

@@ -2,6 +2,8 @@ package com.JavaFullStack.Proyecto.Java.FullStack.implementacion;
 
 import com.JavaFullStack.Proyecto.Java.FullStack.models.Usuario;
 import com.JavaFullStack.Proyecto.Java.FullStack.dao.UsuarioDao;
+import de.mkammerer.argon2.Argon2;
+import de.mkammerer.argon2.Argon2Factory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,18 +33,35 @@ public class usuarioImpl implements UsuarioDao {
     }
     @Override
     public void registrarUsuario(Usuario usuario) {
+//        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+//        String hash = argon2.hash(1, 1024, 1, usuario.getPassword());
+//        usuario.setPassword(hash);
         entityManager.merge(usuario);
     }
 
     @Override
-    public boolean verificarMailYPassword(Usuario usuario) {
+    public Usuario obtenerUsuarioCredenciales(Usuario usuario) {
         // de esta manera se evita injeccion sql de posibles hackers
-        String query = "FROM Usuario WHERE email = :email AND password = :password";
+        String query = "FROM Usuario WHERE email = :email";
+//        AND password = :password";
         List<Usuario> lista = entityManager.createQuery(query)
                 .setParameter("email", usuario.getEmail())
-                .setParameter("password", usuario.getPassword())
+//                .setParameter("password", usuario.getPassword())
                 .getResultList();
-        return !lista.isEmpty();
+
+        if (lista.isEmpty()) {
+            return null;
+        }
+
+        String passwordHashed = lista.get(0).getPassword();
+
+        Argon2 argon2 = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id);
+        if (argon2.verify(passwordHashed, usuario.getPassword())) {
+            return lista.get(0);
+        }
+        return null;
+
+//        return !lista.isEmpty();
         //        Es lo mismo que la ultima linea
 //        if(lista.isEmpty()){return false;}
 //        return true;

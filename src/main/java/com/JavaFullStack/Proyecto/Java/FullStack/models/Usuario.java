@@ -19,7 +19,7 @@ public class Usuario {
     private String nombre;
     @Getter @Setter @Column(name = "email")
     private String email;
-    @Getter @Setter @Column(name = "password")
+    @Getter @Setter @Column(name = "password", length = 255)
     private String password;
 
 }

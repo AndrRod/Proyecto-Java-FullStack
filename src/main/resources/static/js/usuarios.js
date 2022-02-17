@@ -1,6 +1,7 @@
 // Call the dataTables jQuery plugin
 $(document).ready(function() {
   cargarUsuairos();
+  emailUsuario();
   $('#usuarios').DataTable();
 });
 async function cargarUsuairos(){
@@ -10,7 +11,9 @@ async function cargarUsuairos(){
         method: "GET",
         headers:{
           'Accept': 'application/json',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+            //    aca hay que agregar la informacion del token (se toma la informacion del localStorage)
+            'Authorization': localStorage.token
         }
       });
 
@@ -42,7 +45,18 @@ async function cargarUsuairos(){
 }
     document.querySelector("#usuarios tbody").outerHTML = listadoHtml;
 }
+function emailUsuario(){
+    document.getElementById("txt-email-usuario").outerHTML = localStorage.email;
+}
+function getHeaders(){
+    return {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        //    aca hay que agregar la informacion del token (se toma la informacion del localStorage)
+        'Authorization': localStorage.token
+    }
 
+}
 
 async function eliminarUsuario(id) {
 
@@ -53,7 +67,9 @@ async function eliminarUsuario(id) {
             method: "DELETE",
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+            //    aca hay que agregar la informacion del token (se toma la informacion del localStorage)
+                'Authorization': localStorage.token
             }
         });
     document.location.reload();
